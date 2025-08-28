@@ -14,67 +14,92 @@
 
 char	*get_next_line(int fd)
 {
+    static char    *rest;
     char    char_read[BUFFER_SIZE];
+    char    *line;
     int bytes_read;
     
-    fd = open("bittersuite.txt", O_RDONLY);
-    if (fd < 0)
-        return (-1);
+    bytes_read = 1;
     while (bytes_read != 0)
     {
-        bytes_read = read(fd, BUFFER_SIZE, char_read);
+        bytes_read = read(fd, char_read, BUFFER_SIZE);
+        if (bytes_read < 0)
+            return (NULL);
+        if (rest)
+            line = rest_is_true(&rest, char_read, bytes_read);
+        else
+            line = get_line(char_read, &rest, bytes_read);
+        if (line)
+            return (line);
     }
-    close(fd);
+    if (bytes_read == 0 && rest)
+    {
+        line = ft_strdup(rest, ft_strlen(rest));
+        free (rest);
+        return (line);
+    }
+    return (NULL);
 }
-// como mallocar esse rest? deixar toda a memoria mallocada com \0
-char    *armazenamento_retorno(char *char_read)
+
+char    *rest_is_true(char **rest, char *char_read, int bytes)
 {
-    static char    *rest;
     char    *line;
     int i;
-    int j;
-    
+
     i = 0;
-    while (*rest)
+    while ((*rest)[i])
     {
-        if (*rest == '\n')
+        if ((*rest)[i] == '\n')
         {
-            line = malloc(i);
-            if(!line)
-                return (NULL);
-            i = 0;
-            while (rest[i] != '\n')
-            {
-                line[j] = rest[i];
-            }
-            line[j] = '\n';
+            line = ft_strdup(*rest, i + 1);
+            *rest = refresh_rest(*rest, i + 1, 0);
             return (line);
         }
-        rest++;
         i++;
     }
-    rest = data_clean(rest, j);
-    j = 0;
-    while (char_read[j])
-    {
-        rest[i] = char_read[j];
-        i++;
-        j++;
-    }
+    *rest = ft_strdup(char_read, bytes);
+    return (NULL);
 }
 
-char    *data_clean(char *rest, int i)
+char    *get_line(char *char_read, char **rest, int bytes)
 {
-    int j;
-    int end;
-
-    end = i;
-    j = 0;
-    while (*rest)
+    char    *line;
+    int i;
+    
+    i = 0;
+    while (i < bytes)
     {
-        rest[j] = rest [i];
-        j++;
+        if (char_read[i] == '\n')
+        {
+            line = ft_strdup(char_read, i + 1);
+            *rest = malloc(bytes - i - 1);
+            ft_memcpy(*rest, &char_read[i + 1], (bytes - i - 1));
+            return (line);
+        }
         i++;
     }
-    return (rest);
+    *rest = malloc(bytes + 1);
+    if (!(*rest))
+        return (NULL);
+    ft_memcpy(*rest, char_read, bytes);
+    return (NULL);
+}
+
+char    **refresh_rest(char **rest, int i, int bytes)
+{
+    char    *temp;
+    int j;
+
+    j = ft_strlen(&(*rest)[i]);
+    temp = malloc(j + 1);
+    if (!temp)
+        return (NULL);
+    ft_memcpy(temp, *rest + i, (j + 1));
+    free(*rest);
+    *rest = malloc (bytes + j + 1);
+    if (!(*rest))
+        return (NULL);
+    ft_memcpy(*rest, temp, (j + 1));
+    free(temp);
+    return (**rest);
 }

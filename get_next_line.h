@@ -15,9 +15,20 @@
 
 # include <stdlib.h>
 # include <fcntl.h>
+# include <string.h>
 
 #ifndef BUFFER_SIZE
 # define BUFFER_SIZE 1024
 #endif
+
+char	*get_next_line(int fd);
+char    *rest_is_true(char **rest, char *char_read, int bytes);
+char    *get_line(char *char_read, char **rest, int bytes);
+char	*ft_strdup(const char *s, size_t len);
+
+void	*ft_memcpy(void *dest, const void *src, size_t n);
+
+size_t	ft_strlen(const char *s);
+
 
 #endif
