@@ -49,24 +49,23 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-size_t	ft_strlcat(char *dst, const char *src, size_t size)
+char	*ft_strjoin(char const *s1, char const *s2)
 {
-	size_t	dst_len;
-	size_t	src_len;
-	size_t	i;
+	char	*strjoin;
+	size_t	s1_len;
+	size_t	s2_len;
+	size_t	str_len;
 
-	dst_len = ft_strlen(dst);
-	src_len = ft_strlen(src);
-	i = 0;
-	if (size > dst_len)
-	{
-		while ((size - 1) > (dst_len + i) && src[i])
-		{
-			dst[dst_len + i] = src[i];
-			i++;
-		}
-		dst[dst_len + i] = '\0';
-		return (dst_len + src_len);
-	}
-	return (size + src_len);
+	if (!s1 || !s2)
+		return (NULL);
+	s1_len = ft_strlen(s1);
+	s2_len = ft_strlen(s2);
+	str_len = s1_len + s2_len;
+	strjoin = malloc(str_len + 1);
+	if (!strjoin)
+		return (NULL);
+	ft_memcpy(strjoin, s1, s1_len);
+	ft_memcpy(strjoin + s1_len, s2, s2_len);
+	strjoin[str_len] = '\0';
+	return (strjoin);
 }

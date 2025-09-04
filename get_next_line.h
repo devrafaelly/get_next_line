@@ -24,7 +24,7 @@
 char	*get_next_line(int fd);
 char    *rest_is_true(char **rest, char *char_read, int bytes);
 char    *get_line(char *char_read, char **rest, int bytes);
-char    *refresh_rest(char *rest, int len, int i, int bytes);
+char    *update_rest(char *rest, int len, int i, int bytes);
 char	*ft_strdup(const char *s, size_t len);
 
 void	*ft_memcpy(void *dest, const void *src, size_t n);

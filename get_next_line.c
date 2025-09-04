@@ -19,12 +19,11 @@ char	*get_next_line(int fd)
     char    *line;
     int bytes_read;
     
+    
     bytes_read = 1;
     while (bytes_read != 0)
     {
         bytes_read = read(fd, char_read, BUFFER_SIZE);
-        if (bytes_read < 0)
-            return (NULL);
         char_read[bytes_read] = '\0';
         if (rest)
             line = rest_is_true(&rest, char_read, bytes_read);
@@ -58,7 +57,7 @@ char    *rest_is_true(char **rest, char *char_read, int bytes)
             if (!line)
                 return (NULL);
             rest_len = ft_strlen(*rest + i + 1);
-            *rest = refresh_rest(*rest, rest_len, i + 1, bytes);
+            *rest = update_rest(*rest, rest_len, i + 1, bytes);
             if (!*rest)
                 return (NULL);
             ft_strlcat(*rest, char_read, rest_len + bytes + 1);
@@ -67,7 +66,7 @@ char    *rest_is_true(char **rest, char *char_read, int bytes)
         i++;
     }
     rest_len = ft_strlen(*rest);
-    *rest = refresh_rest(*rest, rest_len, 0, bytes);
+    *rest = update_rest(*rest, rest_len, 0, bytes);
     if (!*rest)
         return (NULL);
     ft_strlcat(*rest, char_read, rest_len + bytes + 1);
@@ -100,7 +99,7 @@ char    *get_line(char *char_read, char **rest, int bytes)
     return (NULL);
 }
 
-char    *refresh_rest(char *rest, int len, int i, int bytes)
+char    *update_rest(char *rest, int len, int i, int bytes)
 {
     char    *temp;
 
