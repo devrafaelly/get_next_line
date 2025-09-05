@@ -3,35 +3,75 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: rafaoliv <rafaoliv@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/08/27 16:44:03 by codespace         #+#    #+#             */
-/*   Updated: 2025/08/27 16:44:04 by codespace        ###   ########.fr       */
+/*   Created: 2025/09/05 14:14:08 by rafaoliv          #+#    #+#             */
+/*   Updated: 2025/09/05 16:29:19 by rafaoliv         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *s)
+char	*ft_strchr(const char *s, int c)
 {
-	size_t	i;
+	int	i;
 
 	i = 0;
-	while (s[i] != '\0')
+	while (s[i])
+	{
+		if (s[i] == (char)c)
+			return ((char *)&s[i]);
 		i++;
-	return (i);
+	}
+	if ((char)c == '\0')
+		return ((char *)&s[i]);
+	return (NULL);
 }
 
-char	*ft_strdup(const char *s, size_t len)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	char	*s_cpy;
+	char	*sub_s;
+	size_t	s_len;
 
-	s_cpy = malloc((len + 1) * sizeof(char));
-	if (!s_cpy)
+	if (!s)
 		return (NULL);
-	ft_memcpy(s_cpy, s, len);
-	s_cpy[len] = '\0';
-	return (s_cpy);
+	s_len = 0;
+	while (s[s_len])
+		s_len++;
+	if (start >= s_len)
+		len = 0;
+	else if (start + len > s_len)
+		len = s_len - start;
+	sub_s = malloc(len + 1);
+	if (!sub_s)
+		return (NULL);
+	ft_memcpy(sub_s, &s[start], len);
+	sub_s[len] = '\0';
+	return (sub_s);
+}
+
+char	*ft_strjoin(char *s1, char *s2)
+{
+	char	*strjoin;
+	size_t	s1_len;
+	size_t	s2_len;
+	size_t	str_len;
+
+	if (!s1 || !s2)
+		return (NULL);
+	s1_len = 0;
+	while (s1[s1_len])
+		s1_len++;
+	s2_len = 0;
+	while (s2[s2_len])
+		s2_len++;
+	str_len = s1_len + s2_len;
+	strjoin = ft_calloc(str_len + 1, sizeof(char));
+	if (!strjoin)
+		return (NULL);
+	ft_memcpy(strjoin, s1, s1_len);
+	ft_memcpy(strjoin + s1_len, s2, s2_len);
+	return (strjoin);
 }
 
 void	*ft_memcpy(void *dest, const void *src, size_t n)
@@ -49,23 +89,25 @@ void	*ft_memcpy(void *dest, const void *src, size_t n)
 	return (dest);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+void	*ft_calloc(size_t nmemb, size_t size)
 {
-	char	*strjoin;
-	size_t	s1_len;
-	size_t	s2_len;
-	size_t	str_len;
+	char	*address;
+	size_t	address_size;
+	size_t	i;
 
-	if (!s1 || !s2)
+	if (nmemb != 0 && size > (size_t)-1 / nmemb)
 		return (NULL);
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
-	str_len = s1_len + s2_len;
-	strjoin = malloc(str_len + 1);
-	if (!strjoin)
+	address_size = (nmemb * size);
+	if (address_size == 0)
+		address_size = 1;
+	address = malloc(address_size);
+	if (!address)
 		return (NULL);
-	ft_memcpy(strjoin, s1, s1_len);
-	ft_memcpy(strjoin + s1_len, s2, s2_len);
-	strjoin[str_len] = '\0';
-	return (strjoin);
+	i = 0;
+	while (i < address_size)
+	{
+		address[i] = '\0';
+		i++;
+	}
+	return (address);
 }
