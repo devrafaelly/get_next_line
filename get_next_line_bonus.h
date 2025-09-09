@@ -22,7 +22,7 @@
 #  define BUFFER_SIZE 1024
 # endif
 
-# define MAX_FD 1048576
+# define MAX_FD 1024
 
 char	*get_next_line(int fd);
 char	*ft_strchr(const char *s, int c);
